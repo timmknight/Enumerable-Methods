@@ -6,21 +6,12 @@ module Enumerable
     end
 	end
 
-# print [1,2,3].my_each
-# => 1,2,3
-
 	def my_each_with_index
 		return self unless block_given?
     for i in 0...self.length
       yield(self[i], i)
     end
 	end
-
-# ["a", "b", "c"].each_with_index do |item, index| 
-# 	puts item
-# 	puts index
-# end
-# => a,0,b,1,c,2
 
 	def my_select
 		arr = []
@@ -29,11 +20,6 @@ module Enumerable
 		end
 		arr
 	end
-
-	# [1,2,3,4,5].my_select do |num|
-	#   num.even?  
-	# end
-	#=> [2, 4]
 
 	def my_all?
 		all = true
@@ -45,8 +31,6 @@ module Enumerable
 		all
 	end
 
-# puts %w[ant bear cat].my_all? { |word| word.length >= 3 }
-
 	def my_any?
 			any = false
 		self.my_each do |i|
@@ -56,9 +40,6 @@ module Enumerable
 		end
 		any
 	end
-
-# puts %w[ant bear cat].my_any? { |word| word.length >= 2 } #=> true
-
 
 	def my_none?
 		none = true
@@ -72,12 +53,6 @@ module Enumerable
 		end
 		none
 	end
-# puts %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
-# puts %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
-# puts [].my_none?                                           #=> true
-# puts [nil].my_none?                                        #=> true
-# puts [nil, false].my_none?                                 #=> true
-# puts [true].my_none?																		 	 #=> false
 
 	def my_count
 		count = 0
@@ -87,24 +62,27 @@ module Enumerable
 		count
 	end
 
-# ary = [1, 2, 4, 2]
-# puts ary.count               #=> 4
-# puts ary.count(2)            #=> 2
-# puts ary.count{ |x| x%2==0 } #=> 3
-	def my_map
-		return self unless block_given?
+	def my_map(proc=nil)
 		arr = []
-		self.my_each do |i|
-			arr << yield(i)
-		end
-		arr
+		if proc
+			self.my_each { |i| arr << proc.call(i) }
+			arr
+		else
+			self.my_each { |i| arr << yield(i)}
+			arr
+		end	
 	end
 
-# puts (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
 
-	def my_inject
-		
+	def my_inject(initial=nil)
+		memo = initial.nil? ? self[0] : initial
+		self.my_each { |i| memo = yield(memo, i)}
+		memo
 	end
+end
 
+
+def multiply_els(array)
+	array.my_inject(1) { |total, element| total * element }
 end
 
